@@ -5,6 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscador de Estaciones Renfe</title>
     <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0d1f0f, #1b361b);
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .contenedor {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 255, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+        input {
+            background: #1b361b;
+            color: white;
+            outline: none;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #66bb6a;
+        }
+        #resultado {
+            margin-top: 20px;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #4caf50;
+            text-align: left;
+        }
+    </style>
     <script>
         async function cargarDatos() {
             const response = await fetch("listado-estaciones-completo-act.csv");
@@ -28,7 +85,7 @@
             );
 
             resultado.innerHTML = encontrados.length ? 
-                `<table border="1"><tr>${encabezados.map(h => `<th>${h}</th>`).join("")}</tr>` + 
+                `<table><tr>${encabezados.map(h => `<th>${h}</th>`).join("")}</tr>` + 
                 encontrados.map(f => `<tr>${f.map(d => `<td>${d}</td>`).join("")}</tr>`).join("") + 
                 "</table>" : "No se encontraron resultados";
         }
@@ -39,10 +96,12 @@
     </script>
 </head>
 <body>
-    <h1>Buscador de Estaciones Renfe</h1>
-    <input type="text" id="codigo" placeholder="Código de estación">
-    <input type="text" id="nombre" placeholder="Nombre de estación">
-    <button onclick="buscar()">Buscar</button>
-    <div id="resultado"></div>
+    <div class="contenedor">
+        <h1>Buscador de Estaciones Renfe</h1>
+        <input type="text" id="codigo" placeholder="Código de estación">
+        <input type="text" id="nombre" placeholder="Nombre de estación">
+        <button onclick="buscar()">Buscar</button>
+        <div id="resultado"></div>
+    </div>
 </body>
 </html>
