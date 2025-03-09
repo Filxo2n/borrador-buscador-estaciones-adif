@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Estaciones Renfe</title>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        async function cargarDatos() {
+            const response = await fetch("listado-estaciones-completo-act.csv");
+            const data = await response.text();
+            return data.split("\n").map(row => row.split(";"));
+        }
+
+        async function buscar() {
+            let codigo = document.getElementById("codigo").value.trim();
+            let nombre = document.getElementById("nombre").value.trim().toUpperCase();
+            let resultado = document.getElementById("resultado");
+            resultado.innerHTML = "Buscando...";
+
+            const datos = await cargarDatos();
+            let encabezados = datos[0];
+            let filas = datos.slice(1);
+
+            let encontrados = filas.filter(fila => 
+                (codigo && fila[0].trim() === codigo) || 
+                (nombre && fila[1].toUpperCase().includes(nombre))
+            );
+
+            resultado.innerHTML = encontrados.length ? 
+                `<table border="1"><tr>${encabezados.map(h => `<th>${h}</th>`).join("")}</tr>` + 
+                encontrados.map(f => `<tr>${f.map(d => `<td>${d}</td>`).join("")}</tr>`).join("") + 
+                "</table>" : "No se encontraron resultados";
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</head>
+<body>
+    <h1>Buscador de Estaciones Renfe</h1>
+    <input type="text" id="codigo" placeholder="Código de estación">
+    <input type="text" id="nombre" placeholder="Nombre de estación">
+    <button onclick="buscar()">Buscar</button>
+    <div id="resultado"></div>
+</body>
+</html>
