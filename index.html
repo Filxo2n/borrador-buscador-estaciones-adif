@@ -58,21 +58,61 @@
             margin-top: 20px;
             text-align: left;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        #sugerencias {
+            background: #1b361b;
+            color: white;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            width: 90%;
+            max-width: 380px;
+            z-index: 10;
         }
-        th, td {
+        .sugerencia {
             padding: 8px;
-            border-bottom: 1px solid #4caf50;
-            text-align: left;
+            cursor: pointer;
+        }
+        .sugerencia:hover {
+            background: #66bb6a;
         }
     </style>
     <script>
+        let datosEstaciones = [];
+
         async function cargarDatos() {
             const response = await fetch("listado-estaciones-completo-act.csv");
             const data = await response.text();
-            return data.split("\n").map(row => row.split(";"));
+            datosEstaciones = data.split("\n").map(row => row.split(";"));
+        }
+
+        function actualizarPlaceholder() {
+            let criterio = document.getElementById("criterio").value;
+            let entrada = document.getElementById("entrada");
+            entrada.placeholder = criterio === "codigo" ? "Introduce código de estación" : "Introduce nombre de estación";
+        }
+
+        function mostrarSugerencias() {
+            let criterio = document.getElementById("criterio").value;
+            let entrada = document.getElementById("entrada").value.trim().toUpperCase();
+            let sugerenciasDiv = document.getElementById("sugerencias");
+            sugerenciasDiv.innerHTML = "";
+            if (!entrada || datosEstaciones.length === 0) return;
+
+            let sugerencias = datosEstaciones.slice(1).filter(fila => 
+                criterio === "codigo" ? fila[0].startsWith(entrada) : fila[1].toUpperCase().includes(entrada)
+            ).slice(0, 5);
+
+            sugerencias.forEach(fila => {
+                let div = document.createElement("div");
+                div.classList.add("sugerencia");
+                div.textContent = criterio === "codigo" ? fila[0] : fila[1];
+                div.onclick = () => {
+                    document.getElementById("entrada").value = criterio === "codigo" ? fila[0] : fila[1];
+                    sugerenciasDiv.innerHTML = "";
+                };
+                sugerenciasDiv.appendChild(div);
+            });
         }
 
         async function buscar() {
@@ -81,9 +121,8 @@
             let resultado = document.getElementById("resultado");
             resultado.innerHTML = "Buscando...";
 
-            const datos = await cargarDatos();
-            let encabezados = datos[0];
-            let filas = datos.slice(1);
+            let encabezados = datosEstaciones[0];
+            let filas = datosEstaciones.slice(1);
 
             let encontrados = filas.filter(fila => 
                 (criterio === "codigo" && fila[0].trim() === entrada) || 
@@ -96,15 +135,7 @@
                 "</table>" : "No se encontraron resultados";
         }
 
-        function actualizarPlaceholder() {
-            let criterio = document.getElementById("criterio").value;
-            let entrada = document.getElementById("entrada");
-            entrada.placeholder = criterio === "codigo" ? "Introduce código de estación" : "Introduce nombre de estación";
-        }
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+        document.addEventListener("DOMContentLoaded", cargarDatos);
     </script>
 </head>
 <body>
@@ -114,7 +145,8 @@
             <option value="codigo">Buscar por código</option>
             <option value="nombre">Buscar por nombre</option>
         </select>
-        <input type="text" id="entrada" placeholder="Introduce código de estación">
+        <input type="text" id="entrada" placeholder="Introduce código de estación" oninput="mostrarSugerencias()">
+        <div id="sugerencias"></div>
         <button onclick="buscar()">Buscar</button>
         <div id="resultado"></div>
     </div>
