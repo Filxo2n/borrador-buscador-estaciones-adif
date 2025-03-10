@@ -112,17 +112,16 @@
             sugerenciasDiv.innerHTML = "";
             if (!entrada || datosEstaciones.length === 0) return;
 
-            let indiceNombre = 1; 
             let sugerencias = datosEstaciones.slice(1).filter(fila => 
-                criterio === "codigo" ? fila[0].startsWith(entrada) : fila[indiceNombre].toUpperCase().includes(entrada)
+                criterio === "codigo" ? fila[0].startsWith(entrada) : fila[1].toUpperCase().includes(entrada)
             ).slice(0, 5);
 
             sugerencias.forEach(fila => {
                 let div = document.createElement("div");
                 div.classList.add("sugerencia");
-                div.textContent = criterio === "codigo" ? fila[0] : fila[indiceNombre];
+                div.textContent = criterio === "codigo" ? fila[0] : fila[1];
                 div.onclick = () => {
-                    document.getElementById("entrada").value = criterio === "codigo" ? fila[0] : fila[indiceNombre];
+                    document.getElementById("entrada").value = criterio === "codigo" ? fila[0] : fila[1];
                     sugerenciasDiv.innerHTML = "";
                 };
                 sugerenciasDiv.appendChild(div);
@@ -137,11 +136,10 @@
 
             let encabezados = datosEstaciones[0];
             let filas = datosEstaciones.slice(1);
-            let indiceNombre = 1; 
 
             let encontrados = filas.filter(fila => 
                 (criterio === "codigo" && fila[0].trim() === entrada) || 
-                (criterio === "nombre" && fila[indiceNombre].toUpperCase().includes(entrada))
+                (criterio === "nombre" && fila[1].toUpperCase().includes(entrada))
             );
 
             resultado.innerHTML = encontrados.length ? 
