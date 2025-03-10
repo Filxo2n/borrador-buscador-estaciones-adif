@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Códigos de Estaciones Adif</title>
+    <title>Buscador de Estaciones Renfe</title>
     <link rel="manifest" href="manifest.json">
     <style>
         body {
@@ -141,7 +141,7 @@
 
             let encontrados = filas.filter(fila => 
                 (criterio === "codigo" && fila[0].trim() === entrada) || 
-                (criterio === "descripcion" && fila[indiceNombre].toUpperCase().includes(entrada))
+                (criterio === "nombre" && fila[indiceNombre].toUpperCase().includes(entrada))
             );
 
             resultado.innerHTML = encontrados.length ? 
@@ -155,10 +155,10 @@
 </head>
 <body>
     <div class="contenedor">
-        <h1>Buscador de Códigos de Estaciones Adif</h1>
+        <h1>Buscador de Estaciones Renfe</h1>
         <select id="criterio" onchange="actualizarPlaceholder()">
             <option value="codigo">Buscar por código</option>
-            <option value="descripcion">Buscar por nombre</option>
+            <option value="nombre">Buscar por nombre</option>
         </select>
         <input type="text" id="entrada" placeholder="Introduce código de estación" oninput="mostrarSugerencias()">
         <div id="sugerencias"></div>
