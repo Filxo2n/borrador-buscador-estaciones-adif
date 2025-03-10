@@ -113,16 +113,16 @@
             if (!entrada || datosEstaciones.length === 0) return;
 
             let indiceNombre = 1; 
-            let sugerencias = datosEstaciones.slice(1).filter(fila => 
-                criterio === "codigo" ? fila[0].startsWith(entrada) : fila[indiceNombre].toUpperCase().includes(entrada)
+            let sugerencias = datosEstaciones.slice(1).map(fila => fila[indiceNombre].replace(/\s*\([^)]*\)/g, "")).filter(nombre => 
+                criterio === "codigo" ? fila[0].startsWith(entrada) : nombre.toUpperCase().includes(entrada)
             ).slice(0, 5);
 
-            sugerencias.forEach(fila => {
+            sugerencias.forEach(nombre => {
                 let div = document.createElement("div");
                 div.classList.add("sugerencia");
-                div.textContent = criterio === "codigo" ? fila[0] : fila[indiceNombre];
+                div.textContent = nombre;
                 div.onclick = () => {
-                    document.getElementById("entrada").value = criterio === "codigo" ? fila[0] : fila[indiceNombre];
+                    document.getElementById("entrada").value = nombre;
                     sugerenciasDiv.innerHTML = "";
                 };
                 sugerenciasDiv.appendChild(div);
@@ -141,7 +141,7 @@
 
             let encontrados = filas.filter(fila => 
                 (criterio === "codigo" && fila[0].trim() === entrada) || 
-                (criterio === "nombre" && fila[indiceNombre].toUpperCase().includes(entrada))
+                (criterio === "nombre" && fila[indiceNombre].replace(/\s*\([^)]*\)/g, "").toUpperCase().includes(entrada))
             );
 
             resultado.innerHTML = encontrados.length ? 
