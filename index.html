@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Estaciones Renfe</title>
+    <title>Buscador de Códigos de Estaciones Adif</title>
     <link rel="manifest" href="manifest.json">
     <style>
         body {
@@ -113,16 +113,16 @@
             if (!entrada || datosEstaciones.length === 0) return;
 
             let indiceNombre = 1; 
-            let sugerencias = datosEstaciones.slice(1).map(fila => fila[indiceNombre].replace(/\s*\([^)]*\)/g, "")).filter(nombre => 
-                criterio === "codigo" ? fila[0].startsWith(entrada) : nombre.toUpperCase().includes(entrada)
+            let sugerencias = datosEstaciones.slice(1).filter(fila => 
+                criterio === "codigo" ? fila[0].startsWith(entrada) : fila[indiceNombre].toUpperCase().includes(entrada)
             ).slice(0, 5);
 
-            sugerencias.forEach(nombre => {
+            sugerencias.forEach(fila => {
                 let div = document.createElement("div");
                 div.classList.add("sugerencia");
-                div.textContent = nombre;
+                div.textContent = criterio === "codigo" ? fila[0] : fila[indiceNombre];
                 div.onclick = () => {
-                    document.getElementById("entrada").value = nombre;
+                    document.getElementById("entrada").value = criterio === "codigo" ? fila[0] : fila[indiceNombre];
                     sugerenciasDiv.innerHTML = "";
                 };
                 sugerenciasDiv.appendChild(div);
@@ -141,7 +141,7 @@
 
             let encontrados = filas.filter(fila => 
                 (criterio === "codigo" && fila[0].trim() === entrada) || 
-                (criterio === "nombre" && fila[indiceNombre].replace(/\s*\([^)]*\)/g, "").toUpperCase().includes(entrada))
+                (criterio === "descripcion" && fila[indiceNombre].toUpperCase().includes(entrada))
             );
 
             resultado.innerHTML = encontrados.length ? 
@@ -155,10 +155,10 @@
 </head>
 <body>
     <div class="contenedor">
-        <h1>Buscador de Estaciones Renfe</h1>
+        <h1>Buscador de Códigos de Estaciones Adif</h1>
         <select id="criterio" onchange="actualizarPlaceholder()">
             <option value="codigo">Buscar por código</option>
-            <option value="nombre">Buscar por nombre</option>
+            <option value="descripcion">Buscar por nombre</option>
         </select>
         <input type="text" id="entrada" placeholder="Introduce código de estación" oninput="mostrarSugerencias()">
         <div id="sugerencias"></div>
