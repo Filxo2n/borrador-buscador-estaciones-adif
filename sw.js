@@ -1,7 +1,7 @@
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open("estaciones-cache").then(cache => {
-            return cache.addAll(["index.html", "listado-estaciones-completo-act.csv"]);
+            return cache.addAll(["index.html", "listado-estaciones-completo-act.xlsx"]);
         })
     );
 });
