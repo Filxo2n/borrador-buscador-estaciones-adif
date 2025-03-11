@@ -1,8 +1,8 @@
 {
     "name": "Buscador de Estaciones",
-    "short_name": "Renfe",
+    "short_name": "Códigos Adif",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#007bff"
+    "theme_color": "#00703C"
 }
