@@ -94,7 +94,7 @@
         let datosEstaciones = [];
 
         async function cargarDatos() {
-            const response = await fetch("listado-estaciones-completo-act.csv");
+            const response = await fetch("listado-estaciones-completo-act.xlsx");
             const data = await response.text();
             datosEstaciones = data.split("\n").map(row => row.split(";"));
         }
